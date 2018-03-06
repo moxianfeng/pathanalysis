@@ -48,6 +48,16 @@ func statPath(path string, curdepth int) int64 {
     return _size;
 }
 
+func humanSize(size int64) string {
+    unit := []string{"", "K", "M", "G", "T", "P", "E"};
+    var i int = 0;
+    for size > 1000 {
+        size /= 1000;
+        i++;
+    }
+    return fmt.Sprintf("%d%s", size, unit[i]);
+}
+
 func main() {
     flag.Parse();
     if len(root) == 0 {
@@ -61,7 +71,7 @@ func main() {
         return sizeArray[i].size > sizeArray[j].size
     });
     for _, s := range(sizeArray) {
-        fmt.Println(s.path, s.size);
+        fmt.Println(s.path, humanSize(s.size));
     }
 }
 
