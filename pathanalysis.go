@@ -6,13 +6,21 @@ import (
     "io/ioutil"
     "os"
     "fmt"
+    "sort"
 )
 
 var (
     depth int = 4;
     root string = "";
     pathSize map[string]int64;
+
+    sizeArray []PathSize;
 )
+
+type PathSize struct {
+    path string;
+    size int64;
+}
 
 func statPath(path string, curdepth int) int64 {
     var _size int64 = 0;
@@ -34,7 +42,8 @@ func statPath(path string, curdepth int) int64 {
 
 
     if curdepth == depth && _size > 0 {
-        pathSize[path] = _size;
+        sizeArray = append(sizeArray, PathSize{path: path, size: _size});
+        // pathSize[path] = _size;
     }
     return _size;
 }
@@ -48,8 +57,11 @@ func main() {
 
     statPath(root, 0);
 
-    for p, s := range(pathSize) {
-        fmt.Println(p, s);
+    sort.Slice(sizeArray, func(i, j int) bool {
+        return sizeArray[i].size > sizeArray[j].size
+    });
+    for _, s := range(sizeArray) {
+        fmt.Println(s.path, s.size);
     }
 }
 
@@ -58,5 +70,6 @@ func init() {
     flag.StringVar(&root, "root", "", "root path to analysys");
 
     pathSize = make(map[string]int64);
+    sizeArray = make([]PathSize, 0);
 }
 
